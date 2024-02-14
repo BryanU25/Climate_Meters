@@ -1,0 +1,66 @@
+{% include 'client/Cabecera_Client.html' %}
+<div id="layoutSidenav_content">
+  <main>
+    <div class="container-fluid px-4">
+      <h1 class="mt-4">Ecopetrol</h1>
+      <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">CALCULA TU HUELLA DE CARBONO</li>
+      </ol>
+      <div class="container-fluid px-4">
+        <button id="Add_Fuente">Fuente De Emision</button>        
+        <form method="post" action="{{ url_for('HuellaCarbono.Calculo_Calculadora_HC') }}">        
+          {{form.csrf_token}}                       
+          <div class="mb-3 row">
+            <div class="col-label-selec">
+              <label id= "Lab_Categoria" class="form-check-label" style="display: none">Categoria</label>
+              {{form.Sel_Categoria}}                             
+            </div>
+            <div class="col-label-selec">
+              <label id= "Lab_Fuente" class="form-check-label" style="display: none">Fuente de Emision</label>   
+              {{form.Sel_Fuente}}       
+            </div> 
+            <div class="col-label-selec">
+              <div class="label-select-container">
+                <label id="Lab_Datos" class="form-check-label" style="display: none">Datos a ingresar</label>
+                {{form.Sel_Datos}}                   
+              </div>     
+              <div id="inputContainer"></div>         
+            </div>    
+            <div class="col-label-selec">
+              <button id="Boton_Calcular" type="submit" class="btn btn-primary" style="display: none">Calcular</button>    
+            </div>             
+          </div>                  
+        </form>          
+      </div>
+      <div class="container-fluid px-4">
+        <table id="datatablesSimple2">
+          <thead>
+            <tr>
+                <th scope="col">Fecha</th>
+                <th scope="col">Categoria</th>
+                <th scope="col">Fuente</th>
+                <th scope="col">Cantidad usada</th>                
+                <th scope="col">Unidad</th>
+                <th scope="col">Huella Carbono Generada</th>
+                <!-- <th scope="col">Incertidumbre</th>-->
+                <th scope="col">Acciones</th>
+            </tr>
+          </thead> 
+          <tbody>    
+            {% for Datos in Cal_Existen %}                 
+              <tr class="">
+                  <td scope="row">{{Datos.Fecha}}</td>                                        
+                  <td>{{Datos.Categoria}}</td>
+                  <td>{{Datos.Fuente}}</td>
+                  <td>{{Datos.Cantidad}}</td>
+                  <td>{{Datos.Unidad}}</td>
+                  <td>{{Datos.Generado}}</td>
+                  <td>Editar</td>
+              </tr>    
+            {% endfor %}                                                                                  
+          </tbody> 
+        </table>  
+      </div>
+    </div>
+  </main>
+{% include 'client/Pie_Client.html' %}

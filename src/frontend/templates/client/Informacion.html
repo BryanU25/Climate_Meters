@@ -1,0 +1,36 @@
+{% include 'client/Cabecera_Client.html' %}
+<div id="layoutSidenav_content">
+  <main>
+    <div class="container-fluid px-4">
+      <h1 class="mt-4">Ecopetrol</h1>
+      <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Lectura de sensor</li>
+      </ol>
+      <div class="container-fluid px-4">
+        <div id="userData">
+          <!-- Aquí se mostrarán los datos del usuario -->
+      </div>
+
+    <script>
+        const options = { method: 'GET', headers: { 'User-Agent': 'insomnia/8.4.5' } };
+
+        fetch('https://62c7cf638c90491c2ca7c0e9.mockapi.io/users/10', options)
+            .then(response => response.json())
+            .then(user => {
+                // Manipula los datos del usuario aquí según la estructura de la respuesta API
+                const userDataDiv = document.getElementById('userData');
+                userDataDiv.innerHTML = `
+                    <p><strong>ID:</strong> ${user.id}</p>
+                    <p><strong>Temperatura:</strong> ${user.temperatura}</p>
+                    <p><strong>Humedad:</strong> ${user.humedad}</p>
+                    
+                `;
+            })
+            .catch(err => console.error(err));
+    </script>
+    </div>
+  </div>
+</main>
+
+{% include 'client/Pie_Client.html' %}
+
