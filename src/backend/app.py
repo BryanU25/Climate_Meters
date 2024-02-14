@@ -3,6 +3,8 @@ from backend.database.config import get_connection
 from backend.database.db import init_db
 from flask_wtf.csrf import CSRFProtect
 
+# Rutas
+
 
 app = Flask(__name__)
 
@@ -16,6 +18,7 @@ app.config['SECRET_KEY'] = '\x83`HS\tU\xc7\x19\xfcKJ\xe9\xc6\x0b0\x8c\xea\x1fJ\x
 
 csrf = CSRFProtect(app)
 
+# Blueprints
 
 
 
