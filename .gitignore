@@ -1,0 +1,12 @@
+# Ignorar el directorio virtual de Python
+env/
+.env
+
+# Otros archivos y directorios a ignorar
+__pycache__/
+.pytest_cache/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+.vscode/
