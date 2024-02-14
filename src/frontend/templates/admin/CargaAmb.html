@@ -1,0 +1,185 @@
+{% include 'Admin/Cabecera_Adm.html' %}
+
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Andres</h1>
+            <ol class="breadcrumb mb-4">                            
+                <li class="breadcrumb-item active">Administración de factores de emision</li>
+            </ol> 
+            <div class="container">
+                <div class="row">
+                    <div class="col-5">
+                        <div class="card">                           
+                            <div class="card-header">
+                                AGREGA NUEVO FACTOR DE EMISION
+                            </div>
+                            <div class="card-body">
+                                <form id="formularioCargaAmb" action="#">
+                                    
+                                    <div class="mb-3">
+                                        <label for="txtNombre" class="form-label">Nombre de la carga ambiental:</label>
+                                        <input type="text" class="form-control form-control-sm" name="txtNombre" id="txtNombre" aria-describedby="helpId" placeholder="Escriba el nombre que desea que aparesca para el usuario">                                  
+                                    </div>                                    
+                                    <div class="mb-3">
+                                        <label for="Sel_Categoria" class="form-label">Categoria</label>
+                                        <select class="form-select form-select-lg" name="Sel_Categoria" id="Sel_Categoria">
+                                            <option selected>Seleccione una categoria</option>
+                                            <option value="Combustible Liquido">Combustible Liquido</option>
+                                            <option value="Combustible Solido">Combustible Solido</option>
+                                            <option value="Combustible Gaseoso">Combustible Gaseoso</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="Sel_Unidad" class="form-label">Unidad de medida estandar</label>
+                                        <select class="form-select form-select-lg" name="Sel_Unidad" id="Sel_Unidad">
+                                            <option selected>Seleccione una unidad de medida</option>
+                                            <option value="Kg">kg</option>
+                                            <option value="Gal">gal</option>
+                                            <option value="Ton">ton</option>
+                                        </select>
+                                    </div>                                    
+                                    <div class="mb-3">
+                                        <label for="txtCO2" class="form-label">Factor CO2:</label>
+                                        <input type="text" class="form-control form-control-sm" name="txtCO2" id="txtCO2" aria-describedby="helpId" placeholder="Valor de Factor CO2 [kg CO2/gal]">                                  
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="txtCH4_Fija" class="form-label">Factor CH4 Fijo:</label>
+                                        <input type="text" class="form-control form-control-sm" name="txtCH4_Fija" id="txtCH4_Fija" aria-describedby="helpId" placeholder="Valor de Factor CH4 Fijo [kg CH4/gal]">                                  
+                                    </div> 
+                                    <div class="mb-3">
+                                        <label for="txtN2O_Fija" class="form-label">Factor N2O Fijo:</label>
+                                        <input type="text" class="form-control form-control-sm" name="txtN2O_Fija" id="txtN2O_Fija" aria-describedby="helpId" placeholder="Valor de Factor N2O Fijo [kg NO2/gal]">                                  
+                                    </div>                                                              
+                                    <div class="mb-3">
+                                        <label for="txtCH4_Movil" class="form-label">Factor  CH4 Movil:</label>
+                                        <input type="text" class="form-control form-control-sm" name="txtCH4_Movil" id="txtCH4_Movil" aria-describedby="helpId" placeholder="Valor de Factor CH4 Movil [kg CH4/gal]">                                  
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="txtN2O_Movil" class="form-label">Factor N2O Movil:</label>
+                                        <input type="text" class="form-control form-control-sm" name="txtN2O_Movil" id="txtN2O_Movil" aria-describedby="helpId" placeholder="Valor de Factor N2O Movil [kg NO2/gal]">                                  
+                                    </div>
+
+                                    <button type="button" onclick="EnviarDatos_Factores()" class="btn btn-primary">Guardar</button>
+                                    
+                                </form>                                                            
+                            </div>
+                            <div class="card-footer text-muted"></div>
+                        </div>
+                    </div> 
+                    <div class="col-7">    
+                        <table id="Tabla1">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Categoria</th>
+                                    <th scope="col">Factor CO2</th>
+                                    <th scope="col">CH4 Fuente Fija</th>
+                                    <th scope="col">N2O Fuente Fija</th>
+                                    <th scope="col">CH4 Fuente Movil</th>
+                                    <th scope="col">N2O Fuente Movil</th>
+                                    <th scope="col">Accion</th>
+                                </tr>
+                            </thead> 
+                            <tbody id="Body_T1">                                 
+                            </tbody> 
+                        </table>  
+                                              
+                    </div>
+                    <div class="modal fade" id="Edit_Modal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="editModalLabel">Editar Registro</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <!-- Aquí colocarás los campos de edición -->
+                                <label for="Edit_Nombre">Nombre:</label>
+                                <input type="text" id="Edit_Nombre" class="form-control">
+                                <label for="Edit_Categoria"  class="form-label">Categoria</label>
+                                    <select class="form-select form-select-lg" name="Edit_Categoria" id="Edit_Categoria">                                    <option selected>Seleccione una categoria</option>
+                                        <option value="Combustible Liquido">Combustible Liquido</option>
+                                        <option value="Combustible Solido">Combustible Solido</option>
+                                        <option value="Combustible Gaseoso">Combustible Gaseoso</option>
+                                    </select>
+                                <label for="Edit_CO2">Factor CO2:</label>
+                                <input type="text" id="Edit_CO2" class="form-control">
+                                <label for="Edit_CH4_Fija">Factor CH4 Fijo:</label>
+                                <input type="text" id="Edit_CH4_Fija" class="form-control" >                                                                      
+                                <label for="Edit_N2O_Fija">Factor N2O Fijo:</label>
+                                <input type="text" id="Edit_N2O_Fija" class="form-control">                                             
+                                <label for="Edit_CH4_Movil">Factor  CH4 Movil:</label>
+                                <input type="text" id="Edit_CH4_Movil" class="form-control"> 
+                                <label for="Edit_N2O_Movil">Factor N2O Movil:</label>
+                                <input type="text" id="Edit_N2O_Movil" class="form-control"> 
+                                <!-- Agrega los demás campos según tus necesidades -->
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                              <button type="button" onclick="Guardar_Cambios()" class="btn btn-primary" id="GuardarCambios">Guardar Cambios</button>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="Delete_Modal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteModalLabel">Eliminar Registro</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <label>Nombre:</label>  
+                                    <span id="Delete_Nombre"></span>                              
+                                    <label>Categoria:</label>
+                                    <span id="Delete_Categoria"></span>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="button" onclick="Confirmar_Borrado()" class="btn btn-primary" id="Confirmar">Confirmar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>        
+                                                                                            
+        </div>
+    </main>
+        <footer>
+            <!-- place footer here -->
+        </footer>
+        <!-- Bootstrap JavaScript Libraries -->
+        
+       <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script> -->
+       <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>         -->
+       <!-- <script src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY"></script> -->    
+    </div>
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+        integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+    </script>
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>       
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>       
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous" defer></script>
+
+    <script src="{{ url_for('static', filename='js/scripts.js')}}"></script>    
+    <script src="{{ url_for('static', filename='js/Admin/Variables.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/Admin/Respuestas.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/Admin/Obtencion.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/Admin/Validaciones.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/Admin/Objects/Tablas.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/Admin/Events.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/Admin/Token.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/Admin/Request/H_Carbono.js')}}"></script>    
+    <!-- <script src="{{ url_for('static', filename='js/datatables-simple-demo.js') }}"></script> -->
+    
+</body>
+
+</html>
