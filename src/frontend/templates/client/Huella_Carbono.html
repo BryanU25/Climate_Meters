@@ -33,7 +33,7 @@
         </form>          
       </div>
       <div class="container-fluid px-4">
-        <table id="datatablesSimple2">
+        <table id="Tabla_Client_1">
           <thead>
             <tr>
                 <th scope="col">Fecha</th>
@@ -46,18 +46,7 @@
                 <th scope="col">Acciones</th>
             </tr>
           </thead> 
-          <tbody id="Body_C_T1">    
-            {% for Datos in Cal_Existen %}                 
-              <tr class="">
-                  <td scope="row">{{Datos.Fecha}}</td>                                        
-                  <td>{{Datos.Categoria}}</td>
-                  <td>{{Datos.Fuente}}</td>
-                  <td>{{Datos.Cantidad}}</td>
-                  <td>{{Datos.Unidad}}</td>
-                  <td>{{Datos.Generado}}</td>
-                  <td>Editar</td>
-              </tr>    
-            {% endfor %}                                                                                  
+          <tbody id="Body_Client_T1">   
           </tbody> 
         </table>  
       </div>
