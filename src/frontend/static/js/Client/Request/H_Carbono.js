@@ -20,9 +20,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const Body_T1_Client = document.getElementById("Body_Client_T1");   
       if (Body_T1_Client !== null) {                 
         if (typeof data === "object") {   
-          data.forEach((instancia, index) => {
-            console.log(index);
-            console.log(instancia);          
+          Instancias = data; //Variable que carga los datos de la DB para interactuar de manera global          
+          data.forEach((instancia, index) => {                   
             const row = Gen_Filas(instancia, index);
             Body_T1_Client.insertAdjacentHTML("beforeend", row);
           });
@@ -30,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
           else {
               Body_T1_Client.innerHTML = data;
                 }              
-                // Body_T1_Client.addEventListener("click", Clic_Tabla);
+                Body_T1_Client.addEventListener("click", Clic_Tabla_Cliente);
             }
           else {
             console.error("No se encontró el elemento tbody");

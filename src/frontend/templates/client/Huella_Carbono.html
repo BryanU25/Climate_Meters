@@ -50,6 +50,35 @@
           </tbody> 
         </table>  
       </div>
+      <div class="modal fade" id="Edit_Modal_Cliente_HC" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editModalLabel">Editar Registro de Calculo</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">                              
+                <label for="Edit_Categoria"  class="form-label">Categoria</label>
+                {{form.Sel_Categoria(id='Sel_Categoria_Modal')}}    
+                <label for="Edit_Fuente" class="form-label">Fuente de Emision</label>   
+                {{form.Sel_Fuente(id='Sel_Fuente_Modal')}}   
+                <!-- <label for="Edit_CH4_Fija">Factor CH4 Fijo:</label>
+                <input type="text" id="Edit_CH4_Fija" class="form-control" >                                                                      
+                <label for="Edit_N2O_Fija">Factor N2O Fijo:</label>
+                <input type="text" id="Edit_N2O_Fija" class="form-control">                                             
+                <label for="Edit_CH4_Movil">Factor  CH4 Movil:</label>
+                <input type="text" id="Edit_CH4_Movil" class="form-control"> 
+                <label for="Edit_N2O_Movil">Factor N2O Movil:</label>
+                <input type="text" id="Edit_N2O_Movil" class="form-control">  -->
+                <!-- Agrega los demás campos según tus necesidades -->
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" onclick="Guardar_Cambios()" class="btn btn-primary" id="GuardarCambios">Guardar Cambios</button>
+            </div>
+          </div>
+        </div>
+    </div>
     </div>
   </main>
 {% include 'client/Pie_Client.html' %}

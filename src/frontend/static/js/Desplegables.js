@@ -4,8 +4,16 @@ let Selector_Fuente = document.getElementById("Sel_Fuente");
 let Selector_Datos = document.getElementById("Sel_Datos");
 
 // Carga de valores predeterminados no seleccionables
-Selector_Categoria.innerHTML += '<option value="" disabled selected' + '>'+ "Selecciona Categoria" + '</option>';
-Selector_Datos.innerHTML += '<option value="" disabled selected' + '>'+ "Cantidad de datos a ingresar" + '</option>';
+Selector_Categoria.innerHTML +=
+  '<option value="" disabled selected' +
+  ">" +
+  "Selecciona Categoria" +
+  "</option>";
+Selector_Datos.innerHTML +=
+  '<option value="" disabled selected' +
+  ">" +
+  "Cantidad de datos a ingresar" +
+  "</option>";
 
 //Funciones Adicionales
 function ResizeSelect() {
@@ -17,24 +25,34 @@ function ResizeSelect() {
 
 //Funciones ejecutadas cuando se detectan "Cambios"
 Selector_Categoria.onchange = function () {
-  Cate_Seleccionada = Selector_Categoria.value;
-  
-  fetch("/Cliente/HC_Calculada/SeleccionCategoria/" + Cate_Seleccionada).then(    
-    function(Respuesta) {        
-        Respuesta.json().then(function(Datos) {
-          let optionHTML = '';
-          for (let Fuente of Datos.Fuentes){
-            optionHTML += '<option value="'+ Fuente + '">'+ Fuente +'</option>';
-          }
-          Selector_Fuente.innerHTML = optionHTML;
-          Selector_Fuente.innerHTML += '<option value="" disabled selected' + '>'+ "Selecciona Fuente" + '</option>';
+  Cambio_Selector_Fuente(Selector_Categoria, Selector_Fuente);
+};
+Sel_Cate_Modal.onchange = function () {
+  Cambio_Selector_Fuente(Sel_Cate_Modal, Sel_Fuen_Modal);
+};
 
-        });
-      });    
+async function Cambio_Selector_Fuente(Sel_Cat, Sel_Fue) {
+  Cate_Seleccionada = Sel_Cat.value;
+  try {
+    const Respuesta = await fetch(
+      "/Cliente/HC_Calculada/SeleccionCategoria/" + Cate_Seleccionada
+    );
+    const Datos = await Respuesta.json();
+
+    let optionHTML = "";
+    for (let Fuente of Datos.Fuentes) {
+      optionHTML += '<option value="' + Fuente + '">' + Fuente + "</option>";
+    }
+
+    Sel_Fue.innerHTML = optionHTML;
+    Sel_Fue.innerHTML +=
+      '<option value="" disabled selected>Selecciona Fuente</option>';
+  } catch (error) {
+    console.error("Error al obtener datos:", error);
+  }
 }
 
-Selector_Datos.onchange = function () 
-{
+Selector_Datos.onchange = function () {
   var Cantidad = parseInt(Selector_Datos.value);
   inputContainer.innerHTML = ""; // Limpiamos el contenedor antes de agregar los inputs
 
@@ -46,9 +64,7 @@ Selector_Datos.onchange = function ()
     input.id = "txtDato_" + i;
     inputContainer.appendChild(input);
   }
-}
+};
 
 //Asignación de funciones Adicionales
 Selector_Datos.addEventListener("change", ResizeSelect);
-
-

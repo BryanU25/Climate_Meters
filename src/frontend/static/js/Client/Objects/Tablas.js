@@ -40,5 +40,4 @@ function Gen_Filas(instancia, index) {
     "</td>" +
     "</tr>";
   return row;
-
 }
