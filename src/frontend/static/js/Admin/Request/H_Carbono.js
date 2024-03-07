@@ -59,7 +59,7 @@ function EnviarDatos_Factores() {
   fetch("/Admin/CargaAmb/Guardar", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",      
+      "Content-Type": "application/json",
       "X-CSRFToken": csrfToken, // Incluir el token CSRF en las cabeceras
     },
     body: JSON.stringify(datos),
@@ -94,7 +94,8 @@ function Guardar_Cambios() {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRFToken": "\xa6\xa5\xdd\x1fG\xea\x16\x84\xf8K\xf2\xa5\xe5\xa8\xfe\xd4ae\x80VV\xc3*\x06", 
+      "X-CSRFToken":
+        "\xa6\xa5\xdd\x1fG\xea\x16\x84\xf8K\xf2\xa5\xe5\xa8\xfe\xd4ae\x80VV\xc3*\x06",
     },
     body: JSON.stringify({
       id: instanciaClicada.id,
@@ -126,8 +127,8 @@ function Confirmar_Borrado() {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRFToken": "\xa6\xa5\xdd\x1fG\xea\x16\x84\xf8K\xf2\xa5\xe5\xa8\xfe\xd4ae\x80VV\xc3*\x06", 
-
+      "X-CSRFToken":
+        "\xa6\xa5\xdd\x1fG\xea\x16\x84\xf8K\xf2\xa5\xe5\xa8\xfe\xd4ae\x80VV\xc3*\x06",
     },
     body: JSON.stringify({
       id: id_borrar,

@@ -8,7 +8,7 @@
       </ol>
       <div class="container-fluid px-4">
         <button id="Add_Fuente">Fuente De Emision</button>        
-        <form method="post" action="{{ url_for('HuellaCarbono.Calculo_Calculadora_HC') }}">        
+        <form id="Formulario_HC" action="#">        
           {{form.csrf_token}}                       
           <div class="mb-3 row">
             <div class="col-label-selec">
@@ -27,7 +27,7 @@
               <div id="inputContainer"></div>         
             </div>    
             <div class="col-label-selec">
-              <button id="Boton_Calcular" type="submit" class="btn btn-primary" style="display: none">Calcular</button>    
+              <button id="Boton_Calcular" type="button" onclick="Calculo_Huella()" class="btn btn-primary" style="display: none">Calcular</button>    
             </div>             
           </div>                  
         </form>          
@@ -59,22 +59,23 @@
             </div>
             <div class="modal-body">                              
                 <label for="Edit_Categoria"  class="form-label">Categoria</label>
-                {{form.Sel_Categoria(id='Sel_Categoria_Modal')}}    
-                <label for="Edit_Fuente" class="form-label">Fuente de Emision</label>   
-                {{form.Sel_Fuente(id='Sel_Fuente_Modal')}}   
-                <!-- <label for="Edit_CH4_Fija">Factor CH4 Fijo:</label>
-                <input type="text" id="Edit_CH4_Fija" class="form-control" >                                                                      
-                <label for="Edit_N2O_Fija">Factor N2O Fijo:</label>
-                <input type="text" id="Edit_N2O_Fija" class="form-control">                                             
-                <label for="Edit_CH4_Movil">Factor  CH4 Movil:</label>
-                <input type="text" id="Edit_CH4_Movil" class="form-control"> 
-                <label for="Edit_N2O_Movil">Factor N2O Movil:</label>
-                <input type="text" id="Edit_N2O_Movil" class="form-control">  -->
+                {{form.Sel_Categoria(id='Sel_Categoria_Modal', class='form-control')}}    
+                <label for="Edit_Fuente" class="form-label">Fuente de emision</label>   
+                {{form.Sel_Fuente(id='Sel_Fuente_Modal', class='form-control')}}   
+                <label for="Edit_Cantidad" class="form-label">Cantidad total de la fuente</label>  
+                <input type="text" id="Edit_Text_Cantidad" class="form-control">
+                <!-- <label for="Edit_Unidad" class="form-label">Unidad de medida de la fuente</label>   -->
+                <!-- Selector de Unidad -->
+                <label for="Generada_Label" class="form-label">Huella de Carbono</label>  
+                <span id="Generada_Calculada" class="form-control">  
+
+
+                
                 <!-- Agrega los demás campos según tus necesidades -->
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="button" onclick="Guardar_Cambios()" class="btn btn-primary" id="GuardarCambios">Guardar Cambios</button>
+              <button type="button" onclick="Recalcular_HC()" class="btn btn-primary" id="Recalcular_HC">Calculo nuevo</button>
             </div>
           </div>
         </div>

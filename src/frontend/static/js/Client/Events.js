@@ -8,15 +8,14 @@ window.Clic_Tabla_Cliente = async function (event) {
     try {
       var InstanciaClicada = Instancias[indice];    
       // Llenar los campos del modal con los datos de la instancia
+      console.log(InstanciaClicada);
       Sel_Cate_Modal.style.display = "block";
       Sel_Cate_Modal.value = InstanciaClicada.Categoria;
       await Cambio_Selector_Fuente(Sel_Cate_Modal, Sel_Fuen_Modal);        
       Sel_Fuen_Modal.style.display = "block";
-      Sel_Fuen_Modal.value = InstanciaClicada.Fuente;
-      // document.getElementById("Sel_Fuente").value = InstanciaClicada.Fuente;
-      // document.getElementById("Edit_CH4_Fija").value = InstanciaClicada.Cantidad;
-      // document.getElementById("Edit_N2O_Fija").value = InstanciaClicada.Unidad;
-      // document.getElementById("Edit_CH4_Movil").value = InstanciaClicada.Generada;
+      Sel_Fuen_Modal.value = InstanciaClicada.Fuente;      
+      Text_Cantidad.value = InstanciaClicada.Cantidad;
+      Text_Calculado.innerText = InstanciaClicada.Generado;
 
       // Abrir el modal
       Modal_Edit.show();      
