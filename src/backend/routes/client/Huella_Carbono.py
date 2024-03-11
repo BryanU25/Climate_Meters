@@ -7,28 +7,29 @@ from backend.models.HC_Generada import *
 from backend.models.Catalogos import *
 from flask_wtf.csrf import validate_csrf
 
+
 def Errores_JSON(Cod, Dato):
     if Cod == 600:
         return (
             jsonify(
                 {
                     "success": False,
-                    "error": "La categoria asignada no contiene una 'class' modelo equivalente",
+                    "error": "La categoria solicitada no se encuentra en la base de datos",
                     "categoria": Dato,
                 }
             ),
-            600,
+            Cod,
         )
     elif Cod == 601:
         return (
             jsonify(
                 {
                     "success": False,
-                    "error": "La categoria especificada no esta referenciada en la tabla catalogo_categorias",
+                    "error": "La fuente solicitada no se encuentra en la base de datos",
                     "categoria": Dato,
                 }
             ),
-            601,
+            Cod,
         )
 
 
@@ -102,6 +103,7 @@ def Success_JSON(Cod, Dato):
             215,
         )
 
+
 def Suma_Datos(Datos):
     Suma = 0
     for dato in Datos:
@@ -109,12 +111,12 @@ def Suma_Datos(Datos):
     return Suma
 
 
-def CO2_e(Factores, Datos):
-    CO2 = (Datos * Factores["CO2"]) / 1000
-    CH4_F = (Datos * Factores["CH4_F"]) / 1000
-    N2O_F = (Datos * Factores["N2O_F"]) / 1000
-    CH4_M = (Datos * Factores["CH4_M"]) / 1000
-    N2O_M = (Datos * Factores["N2O_M"]) / 1000
+def CO2_e(Factores, Suma):
+    CO2 = (Suma * Factores["CO2"]) / 1000
+    CH4_F = (Suma * Factores["CH4_F"]) / 1000
+    N2O_F = (Suma * Factores["N2O_F"]) / 1000
+    CH4_M = (Suma * Factores["CH4_M"]) / 1000
+    N2O_M = (Suma * Factores["N2O_M"]) / 1000
     CO2equi = CO2 + (CH4_F * 28) + (N2O_F * 265) + (CH4_M * 28) + (N2O_M * 265)
     return CO2equi
 
@@ -153,7 +155,6 @@ def HC_Calculado():
             return render_template(
                 "client/Huella_Carbono.html", Cal_Existen=Calculos, form=form
             )
-
     else:
         # Manejo de error si la categoría no se encuentra en el catálogo
         return render_template(
@@ -177,166 +178,66 @@ def Categoria_Calculadora_HC(Cate_Seleccionada):
     return jsonify({"Fuentes": Nombres_Fuentes})
 
 
-# @HuellaCarbono.route("/Cliente/HC_Calculada/SeleccionCategoria", methods=["POST"])
-# def Categoria_Calculadora_HC():
-#     form = HuellaCarbonoForm()
-#     if form.validate:
-#     # Obtiene la categoria seleccionada en el desplegable a traves de un script JS (Dinamico)
-#         # Categoria_Seleccionada = request.json.get("Categoria")
-#         Catego = Categorias.buscar_por_nombre("Combustible Solido")
-#         if Catego is not None:
-#             Relacion_de_categoria = CatalogoRelaciones.obtener_relacion_de_categoria(
-#                 "Combustible Solido"
-#             )
-#             print(Relacion_de_categoria)
-
-#             Registros_Relacionados = getattr(Catego, Relacion_de_categoria)
-#             form.Sel_Fuente.choices = [(Registro.Nombre) for Registro in Registros_Relacionados]
-#             return render_template("client/Huella_Carbono.html", form=form)
-#             # for Registro in Registros_Relacionados:
-#             #     Nombres_Fuentes.append(Registro.Nombre)
-#             # # Usa jsonify para convertir la lista de registros en formato JSON
-#             # return jsonify(Nombres_Fuentes)
-#         else:
-#             # Manejo de error si la categoría no se encuentra en el catálogo
-#             return jsonify({"error": "Categoría no encontrada"})
-#         # Si no se valida el formulario, renderiza la plantilla con los errores
-#         # return render_template('client/Huella_Carbono.html', form=form)
-
-
 @HuellaCarbono.route("/Cliente/HC_Calculada/Calcular", methods=["POST"])
 def Calculo_Calculadora_HC():
     try:
-        data = request.get_json()        
-        Cantidad = data.pop("Datos")  
-        Cantidad = [int (x) for x in Cantidad]                      
-        Promedio = Suma_Datos(Cantidad)        
-        Categoria_Seleccionada = data.pop("Categoria")        
+        Data = request.get_json()
+
+        # Calculo de suma de datos
+        Cantidad = Data.pop("Datos")
+        Cantidad = [int(x) for x in Cantidad]
+        Promedio = Suma_Datos(Cantidad)
+        #########################################
+
+        # Se obtiene la CATEGORIA seleccionada en el formulario y procede a buscar la RELACIÓN, se obtiene el MODELO
+        # segun la relación y por medio del modelo se obtienen los datos de las constantes (Registro) dada la FUENTE
+        # seleccionada en el formulario
+        Categoria_Seleccionada = Data.pop("Categoria")
         Catego = Categorias.buscar_por_nombre(Categoria_Seleccionada)
         if Catego is not None:
             Relacion_De_Categoria = CatalogoRelaciones.obtener_relacion_de_categoria(
                 Catego.Nombre
             )
 
-            Fuente_Seleccionada = data.pop("Fuente")
+            Fuente_Seleccionada = Data.pop("Fuente")
 
             # Dada la categoria seleccionada se obtiene el objeto de la clase modelo
             Modelo = getattr(Categorias, Relacion_De_Categoria).property.mapper.class_
+            # Se obtiene el registro especifico seleccionado en "Sel_Fuente" dada la Categoria especifica "Sel_Categoria"
             Registro = Modelo.query.filter_by(Nombre=Fuente_Seleccionada).first()
 
-        if Registro is not None:
-            # Se obtiene el registro especifico seleccionado en "Sel_Fuente" dada la Categoria especifica "Sel_Categoria"
-
             if Registro is not None:
-                Registros_Factores = {
-                    "CO2": Registro.CO2,
-                    "CH4_F": Registro.CH4_F,
-                    "N2O_F": Registro.N2O_F,
-                    "CH4_M": Registro.CH4_M,
-                    "N2O_M": Registro.N2O_M,
-                }
-            CO2_equivalente = CO2_e(Registros_Factores, Promedio)
+                Registros_Factores = vars(
+                    Registro
+                )  # Convierte el objeto obtenido de la base de datos en un diccionario
+                CO2_equivalente = CO2_e(Registros_Factores, Promedio)
 
-            # Obtencion de fecha actual y cambio a cadena de formato ISO 8601
-            Date_Actual = datetime.now()
-            Date_Format = Date_Actual.strftime("%Y-%m-%d")
+                # Obtencion de fecha actual y cambio a cadena de formato ISO 8601
+                Date_Actual = datetime.now()
+                Date_Format = Date_Actual.strftime("%Y-%m-%d")
 
-            # Posterior: (Consultar ID de cliente para inserion en la DB)
-            Componente = HuellaGenerada(
-                User_ID=1,
-                Fecha=Date_Format,
-                Categoria=Categoria_Seleccionada,
-                Fuente=Fuente_Seleccionada,
-                Cantidad=Promedio,
-                Unidad="TON",
-                Generado=CO2_equivalente,
-            )
-            db.session.add(Componente)
-            db.session.commit()        
-        return Success_JSON(210, data)
-        #     else:
-        #         return Errores_JSON(600, modelo_categoria)
-        # else:
-        #     return Errores_JSON(601, categoria_catalogo)
+                # Posterior: (Consultar ID de cliente para inserion en la DB)
+                Componente = HuellaGenerada(
+                    # Hacer Squema para la deserialización de los datos (datos enviados de JS a python para DB)
+                    # que incluya el User_ID, Categoria, Fuente y Unidad, para posteriormente cargarlo en la DB
+                    # La cantidad, La fecha y el generado son procesos en el backend (tambien se cargaran en la DB)
+                    User_ID=1,
+                    Categoria=Categoria_Seleccionada,
+                    Fuente=Fuente_Seleccionada,
+                    Unidad="TON",
+                    Cantidad=Promedio,
+                    Fecha=Date_Format,
+                    Generado=CO2_equivalente,
+                )
+                db.session.add(Componente)
+                db.session.commit()
+                return Success_JSON(210, Data)
+            else:
+                return Errores_JSON(601, Fuente_Seleccionada)
+        else:
+            return Errores_JSON(600, Categoria_Seleccionada)
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
-    # else:
-    # print("Estoy en al función de Python")    
-    # if request.is_json:
-        # Solicitud AJAX (Content-Type: application/json)
-    
-
-    
-    #     # Solicitud desde el formulario HTML
-    #     try:
-    #         cantidad = int(request.form["Sel_Datos"])
-    #         # Resto de la lógica para el formulario HTML
-    #         print("Solicitud por HTML")
-    #         return redirect("/Cliente/HC_Calculada")
-    #     except Exception as e:
-    #         return jsonify({"status": "error", "message": str(e)}), 400
-
-    # Se obtiene el valor de "cantidad de datos" seleccionado y se convierete en entero
-    # cantidad = int(request.form["Sel_Datos"])
-    # datos = []
-    # # Se hace un ciclo para obtener los datos dada la cantidad de inputs ingresados (mejorable para solo recuperar donde hayan datos)
-    # for dato in range(1, cantidad + 1):
-    #     dato = request.form["txtDato_" + str(dato)]
-    #     datos.append(int(dato))
-    # Promedio = Suma_Datos(datos)
-
-    # # Similar a la ruta "/Cliente/HC_Calculada/SeleccionCategoria" para rellenar el selector con las fuentes existentes
-    # Categoria_Seleccionada = request.form["Sel_Categoria"]
-    # Catego = Categorias.buscar_por_nombre(Categoria_Seleccionada)
-    # if Catego is not None:
-    #     Relacion_De_Categoria = CatalogoRelaciones.obtener_relacion_de_categoria(
-    #         Catego.Nombre
-    #     )
-
-    #     Fuente_Seleccionada = request.form["Sel_Fuente"]
-
-    #     # Dada la categoria seleccionada se obtiene el objeto de la clase modelo
-    #     Modelo = getattr(Categorias, Relacion_De_Categoria).property.mapper.class_
-    #     Registro = Modelo.query.filter_by(Nombre=Fuente_Seleccionada).first()
-
-    #     if Registro is not None:
-    #         # Se obtiene el registro especifico seleccionado en "Sel_Fuente" dada la Categoria especifica "Sel_Categoria"
-
-    #         if Registro is not None:
-    #             Registros_Factores = {
-    #                 "CO2": Registro.CO2,
-    #                 "CH4_F": Registro.CH4_F,
-    #                 "N2O_F": Registro.N2O_F,
-    #                 "CH4_M": Registro.CH4_M,
-    #                 "N2O_M": Registro.N2O_M,
-    #             }
-    #         CO2_equivalente = CO2_e(Registros_Factores, Promedio)
-
-    #         # Obtencion de fecha actual y cambio a cadena de formato ISO 8601
-    #         Date_Actual = datetime.now()
-    #         Date_Format = Date_Actual.strftime("%Y-%m-%d")
-
-    #         # Posterior: (Consultar ID de cliente para inserion en la DB)
-    #         Componente = HuellaGenerada(
-    #             User_ID=1,
-    #             Fecha=Date_Format,
-    #             Categoria=Categoria_Seleccionada,
-    #             Fuente=Fuente_Seleccionada,
-    #             Cantidad=Promedio,
-    #             Unidad="TON",
-    #             Generado=CO2_equivalente,
-    #         )
-    #         db.session.add(Componente)
-    #         db.session.commit()
-
-    #     else:
-    #         return print(
-    #             {"error": "La fuente seleccionada no se encuentra en la base de datos"}
-    #         )
-    # else:
-    #     # Manejo de error si la categoría no se encuentra en el catálogo
-    #     return print({"error": "Categoría no encontrada"})
-    # return redirect("/Cliente/HC_Calculada")
 
 
 @HuellaCarbono.route("/Cliente/HC_Calculada/Editar", methods=["PUT"])

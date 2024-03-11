@@ -1,12 +1,3 @@
-function Respuesta_Servidor(data) {
-  if (data.success) {
-    alert("Datos guardados correctamente");
-    window.location.reload();
-  } else {
-    alert("Error al guardar los datos: " + data.error);
-  }
-}
-
 //Solicitud "GET" (Rellena Tabla)
 document.addEventListener("DOMContentLoaded", function () {
   fetch("/Cliente/HC_Calculada", {
@@ -70,10 +61,13 @@ function Calculo_Huella() {
   })
     .then((response) => {
       if (response.ok) {
-        console.log (response.json());
+        return response.json();
       } else {
         throw new Error("Error en la solicitud al servidor");
       }
+    })
+    .then (() => {      
+      window.location.reload();
     })
     .catch((error) => {
       console.error("Error al enviar la solicitud:", error);
