@@ -28,21 +28,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 const row = Gen_Filas(instancia, categoria, index);
                 tbodyElement.insertAdjacentHTML("beforeend", row);
               });
-            } else {
-              tbodyElement.innerHTML = data;
-            }
+            } 
           }
-          tbodyElement.addEventListener("click", Clic_Tabla);
+        } else {
+          tbodyElement.innerHTML = data;
         }
+        tbodyElement.addEventListener("click", Clic_Tabla);
       } else {
-        console.error("No se encontró el elemento tbody");
+        console.error("No se encontró el elemento tbody"); 
       }
       const Tabla1 = document.getElementById("Tabla1");
       if (Tabla1) {
+        console.log(Tabla1);
         new simpleDatatables.DataTable(Tabla1, {
           searchable: false,
           sortable: false,
-        });
+        });        
       }
     })
     .catch((error) => {

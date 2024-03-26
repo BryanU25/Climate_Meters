@@ -1,4 +1,5 @@
-window.Clic_Tabla_Cliente = async function (event) {
+window.Clic_Tabla_C = async function (event) {
+  console.log("Di clic en un boton de la tabla");
   var botonClicadoId = event.target.id;
   // Verificar si el clic fue en un botón de edición o eliminación
   if (event.target.id.includes("Edit")) {    

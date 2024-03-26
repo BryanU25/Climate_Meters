@@ -17,28 +17,33 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     })
     .then((data) => {
-      const Body_T1_Client = document.getElementById("Body_Client_T1");
-      if (Body_T1_Client !== null) {
+      const tbodyElement = document.getElementById("Body_Client_T1");      
+      if (tbodyElement !== null) {
         if (typeof data === "object") {
           Instancias = data; //Variable que carga los datos de la DB para interactuar de manera global
           data.forEach((instancia, index) => {
             const row = Gen_Filas(instancia, index);
-            Body_T1_Client.insertAdjacentHTML("beforeend", row);
+            tbodyElement.insertAdjacentHTML("beforeend", row);
           });
-        } else {
-          Body_T1_Client.innerHTML = data;
+        } else {          
+          tbodyElement.innerHTML = data;
         }
-        Body_T1_Client.addEventListener("click", Clic_Tabla_Cliente);
-      } else {
+        tbodyElement.addEventListener("click", Clic_Tabla_C);        
+      } 
+      else {
         console.error("No se encontró el elemento tbody");
       }
-      const Tabla2 = document.getElementById("Tabla_Client_1");
-      if (Tabla2) {
+      const Tabla_Client_1 = document.getElementById("Tabla_Client_1");
+      if (Tabla_Client_1) {
+        console.log("Toca agregar estilos a la tabla");
         //Consultar como modificiar estilo y formato de tabla
-        new simpleDatatables.DataTable(Tabla2, {
-          searchable: false,
-          sortable: false,
-        });
+        // new simpleDatatables.DataTable(Tabla_Client_1, {       
+        //   searchable: false,
+        //   sortable: false,
+        // });        
+      }
+      else{
+        console.error("No se encontró el objeto tabla");
       }
     })
     .catch((error) => {
@@ -66,10 +71,13 @@ function Calculo_Huella() {
         throw new Error("Error en la solicitud al servidor");
       }
     })
-    .then (() => {      
+    .then(() => {
       window.location.reload();
     })
     .catch((error) => {
       console.error("Error al enviar la solicitud:", error);
     });
 }
+
+//Solicitud "PUT" (Boton "Guardar Cambios")
+function Edit_Calculo() {}
